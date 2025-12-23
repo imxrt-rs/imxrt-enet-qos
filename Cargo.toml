@@ -1,0 +1,17 @@
+[package]
+name = "imxrt-enet-qos"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[dependencies.imxrt-ral]
+version = "0.5"
+features = ["imxrt1176_cm7"]
+
+[dependencies.smoltcp]
+version = "0.12"
+default-features = false
+features = [
+    "medium-ethernet",
+    "proto-ipv4",
+]
