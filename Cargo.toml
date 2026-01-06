@@ -6,7 +6,6 @@ license = "MIT OR Apache-2.0"
 
 [dependencies.imxrt-ral]
 version = "0.5"
-features = ["imxrt1176_cm7"]
 
 [dependencies.smoltcp]
 version = "0.12"

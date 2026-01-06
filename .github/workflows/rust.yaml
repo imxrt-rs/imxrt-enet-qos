@@ -15,6 +15,17 @@ jobs:
     - name: Check formatting
       run: cargo fmt --all --check
 
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chip: [imxrt1176_cm7, imxrt1176_cm4]
+    steps:
+    - uses: actions/checkout@v6
+    - run: rustup toolchain install stable --no-self-update --profile minimal --target thumbv7em-none-eabihf
+    - name: Check the package with all supported chips
+      run: cargo check --features=imxrt-ral/${{ matrix.chip }},smoltcp/socket-udp --target=x86_64-unknown-linux-gnu --target=thumbv7em-none-eabihf
+
   clippy:
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +33,7 @@ jobs:
     - name: Install a stable toolchain with clippy
       run: rustup toolchain install stable --no-self-update --profile minimal --component clippy --target thumbv7em-none-eabihf
     - name: Lint the package for host, target builds
-      run: cargo clippy --features=smoltcp/socket-udp --target=x86_64-unknown-linux-gnu --target=thumbv7em-none-eabihf -- -D warnings
+      run: cargo clippy --features=imxrt-ral/imxrt1176_cm7,smoltcp/socket-udp --target=x86_64-unknown-linux-gnu --target=thumbv7em-none-eabihf -- -D warnings
 
   tests:
     runs-on: ubuntu-latest
@@ -30,7 +41,7 @@ jobs:
     - uses: actions/checkout@v6
     - run: rustup toolchain install stable --no-self-update --profile minimal
     - name: Run tests
-      run: cargo test --features=smoltcp/socket-udp
+      run: cargo test --features=imxrt-ral/imxrt1176_cm7,smoltcp/socket-udp
 
   docs:
     runs-on: ubuntu-latest
@@ -40,4 +51,4 @@ jobs:
     - uses: actions/checkout@v6
     - run: rustup toolchain install stable --no-self-update --profile minimal
     - name: Check documentation
-      run: cargo rustdoc --features=smoltcp/socket-udp
+      run: cargo rustdoc --features=imxrt-ral/imxrt1176_cm7,smoltcp/socket-udp

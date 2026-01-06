@@ -5,19 +5,21 @@ This driver is compatible with smoltcp.
 
 ## Building
 
-Since the driver only targets i.MXRT1170 MCUs, it enables the imxrt-ral's
-`"imxrt1176_cm7"` feature by default. You should only include this driver
-in firmware targeting that MCU (and core).
+This driver targets i.MXRT1170 MCUs. You must enable one of the supported
+imxrt-ral features depending on your target core:
 
-This driver enables a minimum set of smoltcp features. You'll also need to
-enable other smoltcp features to successfully build. The following invocation
+- `imxrt-ral/imxrt1176_cm7` for the Cortex-M7
+- `imxrt-ral/imxrt1176_cm4` for the Cortex-M4
+
+This driver is not compatible with any other imxrt-ral chip feature.
+
+Additionally, the driver enables a minimum set of smoltcp features. You'll need
+to enable other smoltcp features to successfully build. The following invocation
 should work during driver development:
 
 ```
-cargo build --features=smoltcp/socket-udp
+cargo build --features=imxrt-ral/imxrt1176_cm7,smoltcp/socket-udp
 ```
-
-Your project that uses smoltcp likely enables one of these socket features.
 
 ## License
 
