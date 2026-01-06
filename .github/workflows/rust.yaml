@@ -1,0 +1,43 @@
+name: Rust CI
+
+on:
+  push:
+    branches: [ main, trying ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - run: rustup toolchain install stable --no-self-update --profile minimal
+    - name: Check formatting
+      run: cargo fmt --all --check
+
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Install a stable toolchain with clippy
+      run: rustup toolchain install stable --no-self-update --profile minimal --component clippy --target thumbv7em-none-eabihf
+    - name: Lint the package for host, target builds
+      run: cargo clippy --features=smoltcp/socket-udp --target=x86_64-unknown-linux-gnu --target=thumbv7em-none-eabihf -- -D warnings
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - run: rustup toolchain install stable --no-self-update --profile minimal
+    - name: Run tests
+      run: cargo test --features=smoltcp/socket-udp
+
+  docs:
+    runs-on: ubuntu-latest
+    env:
+      RUSTDOCFLAGS: -D warnings
+    steps:
+    - uses: actions/checkout@v6
+    - run: rustup toolchain install stable --no-self-update --profile minimal
+    - name: Check documentation
+      run: cargo rustdoc --features=smoltcp/socket-udp
