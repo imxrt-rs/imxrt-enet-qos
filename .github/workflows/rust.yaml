@@ -26,6 +26,21 @@ jobs:
     - name: Check the package with all supported chips
       run: cargo check --features=imxrt-ral/${{ matrix.chip }},smoltcp/socket-udp --target=x86_64-unknown-linux-gnu --target=thumbv7em-none-eabihf
 
+  smoltcp-compat:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        smoltcp-version: ["0.12.0", "0.13.0"]
+    steps:
+    - uses: actions/checkout@v6
+    - run: rustup toolchain install stable --no-self-update --profile minimal --target thumbv7em-none-eabihf
+    - name: Pin smoltcp version
+      run: cargo update -p smoltcp --precise ${{ matrix.smoltcp-version }}
+    - name: Check the package
+      run: cargo check --features=imxrt-ral/imxrt1176_cm7,smoltcp/socket-udp --target=x86_64-unknown-linux-gnu --target=thumbv7em-none-eabihf
+    - name: Run tests
+      run: cargo test --features=imxrt-ral/imxrt1176_cm7,smoltcp/socket-udp
+
   clippy:
     runs-on: ubuntu-latest
     steps:
