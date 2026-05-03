@@ -902,7 +902,7 @@ impl smoltcp::phy::RxToken for RxToken<'_> {
         // to make sure we're not reading out-of-bounds.
         unsafe {
             let buffer = self.ring.current_buffer();
-            let buffer: &mut [u8; MAX_BUFFER_SIZE] = &mut *buffer.0.get();
+            let buffer: &[u8; MAX_BUFFER_SIZE] = &*buffer.0.get();
 
             let rdes = self.ring.current_descriptor();
             let valid_len = (RDES3_PACKET_LENGTH_MASK & rdes[3].load(Ordering::Acquire)) as usize;
@@ -911,7 +911,7 @@ impl smoltcp::phy::RxToken for RxToken<'_> {
                 clippy::indexing_slicing,
                 reason = "Panic is correct; the DMA controller told us too much data is available"
             )]
-            let result = { f(&mut buffer[..valid_len]) };
+            let result = { f(&buffer[..valid_len]) };
 
             // Now that we've read data from this descriptor, we can give it
             // back to the hardware to receive another packet.
